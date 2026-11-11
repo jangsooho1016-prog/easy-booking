@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+/*
+ * 디자인 토큰 — 이 파일 한 곳에서만 관리한다 (PRD 4장).
+ *
+ * 크기 기준: 루트 글씨 크기(--root-size)를 1rem으로 두고 모든 글씨·간격을 rem으로 쓴다.
+ * 글씨 크기 설정(보통/크게/아주 크게)은 <html data-font-scale>로 루트 크기만 바꾼다.
+ * "보통"에서 PRD 4.2 최솟값을 정확히 맞추므로, 큰 설정에서는 자동으로 더 커진다.
+ *
+ * 명도 대비 (흰 바탕 기준, 계산값):
+ *   ink 14.6:1 · ink-muted 7.9:1 · primary 7.9:1 · danger 7.9:1  → 모두 7:1 이상
+ */
+
+:root {
+  --root-size: 20px; /* 보통: 본문 20px */
+}
+:root[data-font-scale="large"] {
+  --root-size: 23px; /* 크게 */
+}
+:root[data-font-scale="xlarge"] {
+  --root-size: 26px; /* 아주 크게 */
+}
+
+@theme {
+  /* 글꼴 */
+  --font-sans: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+
+  /* 색상 */
+  --color-primary: #0e5a63; /* 짙은 청록: 주 버튼, 강조 */
+  --color-primary-pressed: #0a444b; /* 주 버튼 누름 */
+  --color-ink: #1e2b2f; /* 본문 글자 */
+  --color-ink-muted: #44545a; /* 보조 설명 글자 */
+  --color-surface: #ffffff; /* 화면 바탕 */
+  --color-canvas: #e4eced; /* 데스크톱에서 화면 바깥 */
+  --color-line: #8a9a9e; /* 진행 막대의 남은 칸 */
+  --color-danger: #a3141c; /* 되돌리기 어려운 행동에만 */
+  --color-danger-pressed: #7d0f15;
+  --color-focus: #b25e00; /* 키보드 초점 테두리 */
+
+  /* 글씨 크기 (보통 기준 px) */
+  --text-body: 1rem; /* 20px  — 본문 최소 20px */
+  --text-body--line-height: 1.6;
+  --text-button: 1.1rem; /* 22px  — 버튼 최소 22px */
+  --text-button--line-height: 1.55;
+  --text-question: 1.4rem; /* 28px  — 질문 최소 28px, 굵게 */
+  --text-question--line-height: 1.55;
+  --text-emphasis: 1.6rem; /* 32px  — 되읽기 문장의 날짜·시간 등 */
+  --text-emphasis--line-height: 1.55;
+
+  /* 크기 규칙 */
+  --spacing-button: 3.2rem; /* 64px  — 버튼 최소 높이 */
+  --spacing-button-gap: 0.8rem; /* 16px  — 버튼 사이 최소 간격 */
+  --spacing-key: 3.6rem; /* 72px  — 숫자 키 최소 크기 */
+  --spacing-gutter: 1rem; /* 20px  — 화면 좌우 여백 */
+
+  /* 모서리 */
+  --radius-button: 0.8rem;
+}
+
+@layer base {
+  html {
+    color-scheme: light only; /* 브라우저가 색을 멋대로 뒤집지 않게 (대비 7:1 유지) */
+    font-size: var(--root-size);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.6;
+    word-break: keep-all; /* 한국어 단어가 줄 끝에서 쪼개지지 않게 */
+    overflow-wrap: anywhere;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* 키보드 사용자를 위한 뚜렷한 초점 표시 */
+  :focus-visible {
+    outline: 4px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  button {
+    font: inherit;
+    cursor: pointer;
+    touch-action: manipulation; /* 두 번 눌러 확대 지연 없애기 */
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+  }
+}
