@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-This repo currently contains only `PRD.md`, the source of truth for everything to be built. It is a university course project (author: 장수호): a conversational, senior-friendly (65+) same-day clinic booking web app, working title **쉬운예약**. Read `PRD.md` before making changes. When this file and the PRD disagree, the PRD wins.
+`PRD.md` is the source of truth. This is a university course project (author: 장수호): a conversational, senior-friendly (65+) same-day clinic booking web app, working title **쉬운예약**. PRD §10 steps 1–6 are built and deployed (https://easy-booking-coral.vercel.app). Step 7 (optional: FR-33 voice input, FR-34 measure mode) remains. Read `PRD.md` before making changes. When this file and the PRD disagree, the PRD wins.
 
 ## Mandatory working rules (PRD §11)
 
@@ -16,32 +16,9 @@ This repo currently contains only `PRD.md`, the source of truth for everything t
 
 ## Stack and commands
 
-Planned stack (PRD §3): React + Vite + TypeScript, Tailwind CSS, React Router, localStorage, the Web Speech API (`ko-KR`), and deployment on Vercel. There is no backend.
-
-```
-npm install
-npm run dev          # dev server (port 5173 may be used by another project here; use `npx vite --port 5180`)
-npm run build        # tsc -b && vite build
-npm run typecheck
-npm run preview
-```
-
-There is no lint or unit test setup. UI rule checks (§4.2 sizes, contrast and horizontal scroll at 360px × 3 font scales) have been done with a throwaway Playwright script driving the installed Chrome (`playwright-core` with `executablePath`). Rerun an equivalent check after layout changes.
-
-Notable versions: React 19, React Router 8 (import from `react-router`), Vite 8, Tailwind 4 (configured via `@tailwindcss/vite`, there is no `tailwind.config`), TypeScript 7.
-
-Vercel needs an SPA rewrite (e.g. `vercel.json` rewriting every path to `/index.html`) so that refreshing or opening a mid-flow URL directly doesn't return a 404 (acceptance scenario 11).
-
-## Architecture constraints (cross-cutting, easy to get wrong)
-
-- **One question per screen, one route per step.** The flow is 시작 → 병원 확인 (→ 다른 병원 고르기) → 선생님 확인 (→ 선생님 고르기) → 시간 선택 → 되읽기 확인 → 본인 확인 → 방문 이유 → 최종 확인 → 예약 완료, plus 내 예약. Each step is its own route, so the browser back button and the in-app "← 이전으로" button behave the same way and go back exactly one question.
-- **Booking state persists on every change.** The in-progress booking (hospital, doctor, time slot, partially typed birthdate digits, visit reason, and the current step) is written to localStorage as soon as it changes. Going back never clears earlier selections: a revisited screen shows the previous choice as selected, and a half-typed keypad entry is still there. On app load, if an in-progress booking exists, the start screen asks "하시던 예약이 있어요. 이어서 할까요?", and "이어서 할게요" resumes at the saved step. Leaving mid-flow asks for confirmation and keeps the saved progress.
-- **"다시 고를게요" on the read-back screen** lets the user change only the hospital, the doctor or the time. Every other selection stays as it was.
-- **Separate localStorage data:** the in-progress booking, completed bookings (shown in 내 예약 and removable by cancelling), and settings (font size 보통/크게/아주 크게, and TTS on/off).
-- **Time slots are generated, not stored** (FR-11). Slots run in 30-minute steps from the current time, and each doctor has some slots marked as closed. Closed slots are never shown; they are not greyed out. Group slots into 오전/오후, show at most 6 per screen, and put the rest behind "다른 시간 더 보기". Format times as "오후 2시 30분". There is no calendar. After 17:30, every screen switches to **tomorrow**, using "내일" and tomorrow's date. Keep the date, time and "today or tomorrow" logic in one module so every piece of copy stays consistent. Testing it requires faking the current time (acceptance scenario 7).
-- **The keypad is drawn in the app.** Birthdate entry uses large on-screen keys (0–9, 하나 지우기, 모두 지우기), and the device keyboard must never open. That means no focusable `<input>` for the digits. Typed digits are shown in 6 boxes and never masked. A wrong number clears only the boxes, with no attempt limit or lockout.
-- **Shared screen layout:** a progress label at the top ("4단계 중 N단계"; the 4 stages are 병원·선생님 / 시간 / 본인 확인 / 마지막 확인), then the question, then full-width buttons (the primary button filled, secondary buttons outlined), then a fixed "← 이전으로" button at the bottom, with "소리로 듣기" and "글씨 크기" at the top right. Every screen should use this one layout component.
-- **TTS:** when it's on, the question is read aloud on every screen change, and the read-back sentence is read automatically. Hide the TTS button if `speechSynthesis` isn't available.
+- Port 5173 may be used by another project on this machine. Run the dev server with `npx vite --port 5180`.
+- There is no lint or unit test setup. UI rule checks (§4.2 sizes, contrast and horizontal scroll at 360px × 3 font scales) have been done with a throwaway Playwright script driving the installed Chrome (`playwright-core` with `executablePath`). Rerun an equivalent check after layout changes.
+- React Router 8 is imported from `react-router`. Tailwind 4 is configured via `@tailwindcss/vite`; there is no `tailwind.config`.
 
 ## How the flow is implemented
 
@@ -81,8 +58,3 @@ Use one calm primary color (deep teal or deep blue). Red is only for actions tha
 ## Verification
 
 PRD §9 lists 11 acceptance scenarios. They are the definition of done, so check the relevant ones by actually running the app after each step.
-
-## Docs to produce
-
-- `docs/PROMPTS.md`: the prompt log described above.
-- `README.md` (step 6): project description, main features, how to run it, the deployed URL, and a note that all data is fake.
