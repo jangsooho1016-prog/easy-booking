@@ -2,7 +2,7 @@
 
 스마트폰 조작과 작은 글씨가 어려운 65세 이상 어르신이 다른 사람의 도움 없이 **당일 병원 진료 예약을 3분 안에** 끝낼 수 있도록 만든 연습용 웹앱입니다.
 
-- 배포 주소: **(배포 후 기록)**
+- 배포 주소: **https://easy-booking-coral.vercel.app**
 - 기획 문서: [`PRD.md`](PRD.md)
 - 개발 과정 프롬프트 기록: [`docs/PROMPTS.md`](docs/PROMPTS.md)
 
