@@ -27,7 +27,7 @@ const PAGE_SIZE = 6
 /**
  * 시간 선택 (FR-08~10).
  * 예약 가능한 시간만 큰 버튼으로, 오전/오후로 묶어 한 화면에 최대 6개.
- * [다른 시간 더 보기]는 주소의 ?page를 바꾸므로 뒤로 가기로 앞 시간으로 돌아올 수 있다.
+ * [예약 가능한 시간 더 보기]는 주소의 ?page를 바꾸므로 뒤로 가기로 앞 시간으로 돌아올 수 있다.
  */
 export function TimeSelectPage() {
   const { draft, dispatch } = useBooking()
@@ -112,7 +112,7 @@ export function TimeSelectPage() {
           <ButtonStack label="시간 더 보기">
             {page < pageCount && (
               <BigButton variant="secondary" onClick={() => goPage(page + 1)}>
-                다른 시간 더 보기
+                예약 가능한 시간 더 보기
               </BigButton>
             )}
             {page > 1 && (
