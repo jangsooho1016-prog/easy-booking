@@ -4,7 +4,6 @@
 
 - 배포 주소: **https://easy-booking-coral.vercel.app**
 - 기획 문서: [`PRD.md`](PRD.md)
-- 개발 과정 프롬프트 기록: [`docs/PROMPTS.md`](docs/PROMPTS.md)
 
 ## 이런 문제를 풀었습니다
 
