@@ -6,6 +6,7 @@ import { ScreenLayout } from '../components/ScreenLayout'
 import { BookingDetails } from '../components/BookingDetails'
 import { USER } from '../data'
 import { useGoBack } from '../hooks/useGoBack'
+import { measureResult } from '../lib/measure'
 import { dayWordOf, formatArriveBy } from '../lib/time'
 import { useBooking } from '../state/booking'
 
@@ -49,6 +50,7 @@ export function DonePage() {
   }, [booking, draft.started, dispatch])
 
   if (!booking) return <Navigate to="/" replace />
+  const measured = measureResult(booking.id)
 
   return (
     <ScreenLayout
@@ -78,6 +80,22 @@ export function DonePage() {
           </BigButton>
         </ButtonStack>
       </div>
+      {/* 측정 모드(?measure=1)일 때만 보인다 (FR-34) */}
+      {measured && (
+        <section
+          aria-labelledby="measure-title"
+          className="mt-8 rounded-button border-[3px] border-line px-4 py-3 text-body text-ink"
+        >
+          <h2 id="measure-title" className="font-bold">
+            측정 결과
+          </h2>
+          <ul className="mt-1">
+            <li>걸린 시간: {measured.seconds}초</li>
+            <li>본인 확인 오입력: {measured.birthErrors}번</li>
+            <li>"이전으로" 사용: {measured.backs}번</li>
+          </ul>
+        </section>
+      )}
     </ScreenLayout>
   )
 }

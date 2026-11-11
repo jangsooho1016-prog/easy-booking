@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router'
 import { BigButton } from '../components/BigButton'
 import { ButtonStack } from '../components/ButtonStack'
 import { ScreenLayout } from '../components/ScreenLayout'
+import { NOT_UNDERSTOOD, VoiceAnswer, VoiceYesNo } from '../components/VoiceAnswer'
 import { findDoctor, findHospital } from '../data'
 import { useGoBack } from '../hooks/useGoBack'
 import { openSlots } from '../lib/schedule'
@@ -18,6 +19,7 @@ import {
   withRo,
   type Slot,
 } from '../lib/time'
+import { matchTime } from '../lib/voiceMatch'
 import { nextRoute, reduce, useBooking } from '../state/booking'
 
 const PAGE_SIZE = 6
@@ -72,6 +74,17 @@ export function TimeSelectPage() {
       stage={2}
       question="몇 시에 오실 수 있으세요?"
       help={help}
+      // 말로 고르기 (FR-33): 다른 쪽에 있는 시간도 말하면 고를 수 있다
+      voice={
+        <VoiceAnswer
+          onHeard={(texts) => {
+            const heard = matchTime(texts, slots)
+            if (heard === null) return NOT_UNDERSTOOD
+            if (heard === 'closed') return '그 시간에는 예약할 수 없어요. 다른 시간을 말씀하시거나 버튼을 눌러 주세요.'
+            choose(heard)
+          }}
+        />
+      }
       onBack={goBack}
     >
       <div className="flex flex-col gap-8">
@@ -144,6 +157,7 @@ export function TimeCheckPage() {
         </>
       }
       help={`진료는 ${doctor.name} 선생님이 봐 드려요.`}
+      voice={<VoiceYesNo onYes={() => navigate('/identity')} onNo={() => navigate('/time/change')} />}
       onBack={goBack}
     >
       <ButtonStack>

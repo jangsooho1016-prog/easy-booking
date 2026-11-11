@@ -96,5 +96,48 @@
       transition-duration: 0.01ms !important;
       animation-duration: 0.01ms !important;
     }
+    /* 선택 버튼의 서서히 나타나기는 위치가 움직이지 않는 효과라 남겨 둔다 (아래 .choice-stack 참고) */
+    .choice-stack > * {
+      animation-duration: 600ms !important;
+    }
+  }
+}
+
+/*
+ * 선택 버튼 등장 효과: 질문이 먼저 보이고, 버튼이 조금 뒤에 위에서부터 차례로 서서히 나타난다.
+ * 질문이 보이고 0.3초 뒤부터 0.2초 간격으로, 버튼 하나가 0.6초에 걸쳐 나타난다(네 개면 1.5초). fill-mode가 backwards라 끝난 뒤에는 버튼의 눌림 효과를 방해하지 않는다.
+ * "움직임 줄이기"를 켠 기기(Windows에서 애니메이션 효과를 끈 경우 포함)에서는
+ * 올라오는 움직임 없이 제자리에서 서서히 나타나기만 한다.
+ */
+@keyframes choice-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.4rem);
+  }
+}
+
+.choice-stack > * {
+  animation: choice-in 600ms ease-out backwards;
+  animation-delay: 300ms;
+}
+.choice-stack > :nth-child(2) {
+  animation-delay: 500ms;
+}
+.choice-stack > :nth-child(3) {
+  animation-delay: 700ms;
+}
+.choice-stack > :nth-child(n + 4) {
+  animation-delay: 900ms;
+}
+
+@keyframes choice-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .choice-stack > * {
+    animation-name: choice-fade;
   }
 }

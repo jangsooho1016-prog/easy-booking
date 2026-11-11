@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router'
 import { BigButton } from '../components/BigButton'
 import { ButtonStack } from '../components/ButtonStack'
 import { ScreenLayout } from '../components/ScreenLayout'
+import { VoiceYesNo } from '../components/VoiceAnswer'
 import { findHospital, HOSPITALS, USER } from '../data'
 import { useGoBack } from '../hooks/useGoBack'
 import { withRo } from '../lib/time'
@@ -25,6 +26,7 @@ export function HospitalConfirmPage() {
       stage={1}
       question={`지난번에 가신 ${withRo(last.name)} 예약할까요?`}
       help={`${last.neighborhood}에 있는 ${last.department}예요.`}
+      voice={<VoiceYesNo onYes={chooseLast} onNo={() => navigate('/hospital/choose')} />}
       onBack={goBack}
     >
       <ButtonStack>

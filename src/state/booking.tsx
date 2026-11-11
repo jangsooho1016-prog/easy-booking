@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react'
 import { findDoctor, USER, type VisitReasonId } from '../data'
+import { beginMeasure, finishMeasure } from '../lib/measure'
 import { isSlotOpen } from '../lib/schedule'
 import { load, remove, save } from '../lib/storage'
 import { now, parseSlot, type Slot } from '../lib/time'
@@ -200,6 +201,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
 
   // 고르거나 누를 때마다 그 자리에서 바로 저장한다 (화면을 그리기 전에)
   const dispatch = useCallback((action: Action) => {
+    if (action.type === 'start') beginMeasure() // 측정 모드 (FR-34)
     const next = reduce(draftRef.current, action)
     if (next === draftRef.current) return
     draftRef.current = next
@@ -221,6 +223,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     const next = [...bookings, booking]
     setBookings(next)
     save(BOOKINGS_KEY, next)
+    finishMeasure(booking.id)
     // 진행 내용은 완료 화면에 도착한 뒤 비운다. 여기서 비우면 지금 화면의 Guard가
     // 먼저 반응해 시작 화면으로 보낼 수 있다.
     return booking

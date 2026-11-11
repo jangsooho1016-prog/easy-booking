@@ -3,6 +3,7 @@ import { Avatar } from '../components/Avatar'
 import { BigButton } from '../components/BigButton'
 import { ButtonStack } from '../components/ButtonStack'
 import { ScreenLayout } from '../components/ScreenLayout'
+import { VoiceYesNo } from '../components/VoiceAnswer'
 import { doctorsOf } from '../data'
 import { useGoBack } from '../hooks/useGoBack'
 import { fastestDoctor, openSlots } from '../lib/schedule'
@@ -43,6 +44,7 @@ export function DoctorConfirmPage() {
       stage={1}
       question={`${day.word} 가장 빨리 볼 수 있는 선생님으로 할까요?`}
       help={`${fastest.doctor.name} 선생님, ${day.word} ${formatSlotTime(fastest.slot)}부터 볼 수 있어요.`}
+      voice={<VoiceYesNo onYes={chooseFastest} onNo={() => navigate('/doctor/choose')} />}
       onBack={goBack}
     >
       <ButtonStack>

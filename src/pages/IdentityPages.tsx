@@ -5,7 +5,9 @@ import { ButtonStack } from '../components/ButtonStack'
 import { DigitBoxes, Keypad } from '../components/Keypad'
 import { ScreenLayout } from '../components/ScreenLayout'
 import { USER } from '../data'
+import { VoiceYesNo } from '../components/VoiceAnswer'
 import { useGoBack } from '../hooks/useGoBack'
+import { countBirthError } from '../lib/measure'
 import { useBooking } from '../state/booking'
 import { useSettings } from '../state/settings'
 
@@ -27,24 +29,25 @@ export function IdentityNamePage() {
   const navigate = useNavigate()
   const goBack = useGoBack('/time/check')
 
+  const yes = () => {
+    dispatch({ type: 'nameConfirmed' })
+    navigate('/identity/birth')
+  }
+  const no = () => navigate('/identity/other')
+
   return (
     <ScreenLayout
       stage={3}
       question={`예약하시는 분이 ${USER.name} 님 맞으세요?`}
+      voice={<VoiceYesNo onYes={yes} onNo={no} />}
       note={<PracticeNote />}
       onBack={goBack}
     >
       <ButtonStack>
-        <BigButton
-          selected={draft.nameConfirmed}
-          onClick={() => {
-            dispatch({ type: 'nameConfirmed' })
-            navigate('/identity/birth')
-          }}
-        >
+        <BigButton selected={draft.nameConfirmed} onClick={yes}>
           네, 맞아요
         </BigButton>
-        <BigButton variant="secondary" onClick={() => navigate('/identity/other')}>
+        <BigButton variant="secondary" onClick={no}>
           아니에요
         </BigButton>
       </ButtonStack>
@@ -132,6 +135,7 @@ export function IdentityBirthPage() {
       dispatch({ type: 'birthVerified' })
       navigate('/visit-reason')
     } else {
+      countBirthError() // 측정 모드 (FR-34)
       dispatch({ type: 'digits', digits: '' })
       setError('번호가 맞지 않아요. 다시 한 번 눌러 주세요.')
     }

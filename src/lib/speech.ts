@@ -37,3 +37,7 @@ export function speak(text: string) {
 export function stopSpeaking() {
   if (speechSupported()) window.speechSynthesis.cancel()
 }
+
+/** 지금 읽어 주는 중인지 (읽는 소리가 끝난 뒤에 듣기 시작하려고 쓴다) */
+export const isSpeaking = () =>
+  speechSupported() && (window.speechSynthesis.speaking || window.speechSynthesis.pending)
